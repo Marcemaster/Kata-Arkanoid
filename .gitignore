@@ -1,1 +1,3 @@
 venv/
+.vscide/
+**/__pycache__/
