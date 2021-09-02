@@ -51,9 +51,11 @@ class Partida(Escena):
     def bucle_principal(self):
         game_over = False
         while not game_over:
+            self.reloj.tick(FPS)
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     exit()
+            self.player.update()
 
             self.pantalla.blit(self.fondo, (0, 0))
             self.pantalla.blit(self.player.image, self.player.rect)
