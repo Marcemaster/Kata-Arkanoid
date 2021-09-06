@@ -20,4 +20,4 @@ class Game():
                 i = 0
             # fórmula matemática equivalente al las tres lineas de arriba.
             # i = (i + 1) % len(self.escenas)
-        pg.quit()
+            
