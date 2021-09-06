@@ -1,6 +1,6 @@
 import pygame as pg
 from . import FPS, ANCHO, ALTO
-from .entidades import Raqueta
+from .entidades import Raqueta, Bola
 
 
 class Escena():
@@ -47,6 +47,7 @@ class Partida(Escena):
         super().__init__(pantalla)
         self.fondo = pg.image.load("arkanoid/resources/images/background.jpg")
         self.player = Raqueta(midbottom=(ANCHO/2, ALTO-15))
+        self.bola = Bola(midbottom=(ANCHO/2, ALTO/2))
 
     def bucle_principal(self):
         game_over = False
@@ -56,9 +57,11 @@ class Partida(Escena):
                 if evento.type == pg.QUIT:
                     exit()
             self.player.update()
+            self.bola.update()
 
             self.pantalla.blit(self.fondo, (0, 0))
             self.pantalla.blit(self.player.image, self.player.rect)
+            self.pantalla.blit(self.bola.image, self.bola.rect)
             pg.display.flip()
 
 
