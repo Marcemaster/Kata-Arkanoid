@@ -1,6 +1,6 @@
 import pygame as pg
 from . import FPS, ANCHO, ALTO
-from .entidades import Raqueta, Bola
+from .entidades import Raqueta, Bola, Ladrillo
 
 
 class Escena():
@@ -46,31 +46,59 @@ class Partida(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
         self.fondo = pg.image.load("arkanoid/resources/images/background.jpg")
+        self.todos = pg.sprite.Group()
         self.player = Raqueta(midbottom=(ANCHO/2, ALTO-15))
         self.bola = Bola(center=(ANCHO/2, ALTO/2))
+        self.puntos = 0
+
+        self.ladrillos = pg.sprite.Group()
+
+
+        self.todos.add(self.player, self.bola)
+
+
+    def reset(self):
+        self.vidas = 3 
+        self.puntos = 0
+
+        self.ladrillos.empty()
+        self.todos.empty()
+
+        self.bola.reset()
+        self.player.reset()
+        
+        for f in range(3):
+            for c in range(6):
+                ladrillo = Ladrillo(c * 90 + 30, f * 30 + 10)
+                self.ladrillos.add(ladrillo)
+
+        self.todos.add(self.ladrillos, self.player, self.bola)
 
     def bucle_principal(self):
-        vidas = 3 
-        while vidas > 0:
+        self.reset()
+        while self.vidas > 0:
             dt = self.reloj.tick(FPS)
             self.reloj.tick(FPS)
             for evento in pg.event.get():
                 if evento.type == pg.QUIT:
                     exit()
 
-            self.player.update(dt)
+            self.todos.update(dt)
 
-            self.bola.update(dt)
             self.bola.comprobar_colision(self.player)
 
+            tocados = pg.sprite.spritecollide(self.bola, self.ladrillos, True)
+            if len(tocados) > 0:
+                self.bola.move_y *= -1
+                self.puntos += len(tocados) * 5
+
             if not self.bola.viva:
-                vidas -= 1
+                self.vidas -= 1
                 self.bola.viva = True
 
-
             self.pantalla.blit(self.fondo, (0, 0))
-            self.pantalla.blit(self.player.image, self.player.rect)
-            self.pantalla.blit(self.bola.image, self.bola.rect)
+            self.todos.draw(self.pantalla)
+
             pg.display.flip()
 
 
