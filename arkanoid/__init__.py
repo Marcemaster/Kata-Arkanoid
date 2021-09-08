@@ -1,3 +1,3 @@
 ANCHO = 600
 ALTO = 800
-FPS = 60
+FPS = 120

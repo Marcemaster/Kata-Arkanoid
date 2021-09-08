@@ -1,6 +1,6 @@
 import pygame as pg
 from . import FPS, ANCHO, ALTO
-from .entidades import Raqueta, Bola, Ladrillo
+from .entidades import Raqueta, Bola, Ladrillo, Marcador
 
 
 class Escena():
@@ -46,15 +46,18 @@ class Partida(Escena):
     def __init__(self, pantalla):
         super().__init__(pantalla)
         self.fondo = pg.image.load("arkanoid/resources/images/background.jpg")
-        self.todos = pg.sprite.Group()
+
         self.player = Raqueta(midbottom=(ANCHO/2, ALTO-15))
         self.bola = Bola(center=(ANCHO/2, ALTO/2))
         self.puntos = 0
 
+        self.cuentaVidas = Marcador(10, 10, "CabinSketch-Bold.ttf", 24, (255,255,255))
+        self.cuentaPuntos = Marcador(1, 40, "LibreFranklin-VariableFont_wght.ttf", 24, (255,255,255))
+
+
         self.ladrillos = pg.sprite.Group()
+        self.todos = pg.sprite.Group()
 
-
-        self.todos.add(self.player, self.bola)
 
 
     def reset(self):
@@ -72,7 +75,7 @@ class Partida(Escena):
                 ladrillo = Ladrillo(c * 90 + 30, f * 30 + 10)
                 self.ladrillos.add(ladrillo)
 
-        self.todos.add(self.ladrillos, self.player, self.bola)
+        self.todos.add(self.ladrillos, self.player, self.bola, self.cuentaPuntos, self.cuentaVidas, self.cuentaPuntos)
 
     def bucle_principal(self):
         self.reset()
@@ -83,6 +86,10 @@ class Partida(Escena):
                 if evento.type == pg.QUIT:
                     exit()
 
+            
+
+            self.cuentaPuntos.texto = self.puntos
+            self.cuentaVidas.texto = self.vidas
             self.todos.update(dt)
 
             self.bola.comprobar_colision(self.player)
@@ -95,6 +102,7 @@ class Partida(Escena):
             if not self.bola.viva:
                 self.vidas -= 1
                 self.bola.viva = True
+                self.player.reset()
 
             self.pantalla.blit(self.fondo, (0, 0))
             self.todos.draw(self.pantalla)

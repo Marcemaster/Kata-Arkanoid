@@ -55,8 +55,8 @@ class Bola(Sprite):
         self.image = pg.image.load(
             f"arkanoid/resources/images/{self.disfraces}")
         self.rect = self.image.get_rect(**kwargs)
-        self.move_x = 5
-        self.move_y = 5
+        self.move_x = 10
+        self.move_y = 10
         self.viva = True
         self.position = kwargs
 
@@ -93,3 +93,26 @@ class Ladrillo(Sprite):
         self.image = pg.image.load(
             f"arkanoid/resources/images/{self.disfraces}")
         self.rect = self.image.get_rect(x=x, y=y)
+
+
+class Marcador(Sprite):
+    def __init__(self, x, y, fichero_letra, tamayo, color):
+        super().__init__()
+        self._texto = ""
+        self.x = x
+        self.y = y
+        self.color = color
+        self.fuente = pg.font.Font(f"arkanoid/resources/fonts/{fichero_letra}", tamayo)
+        self.image = self.fuente.render(self._texto, True, self.color)
+        self.rect = self.image.get_rect(x=self.x, y=self.y)
+
+    def update(self, dt):
+        self.image = self.fuente.render(self._texto, True, self.color)
+        self.rect = self.image.get_rect(x=self.x, y=self.y)
+
+    @property
+    def texto(self):
+        return self._texto
+    @texto.setter
+    def texto(self, valor):
+        self._texto = str(valor) 
